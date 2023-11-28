@@ -1,20 +1,124 @@
 import axios from "axios";
 import Notiflix from "notiflix";
 
+const API_KEY = '35827866-cac2bfdbcf92b350627521ced';
+const API_URL = 'https://pixabay.com/api/';
+const perPage = 40;
 
-axios.get('/users')
-  .then(res => {
-    console.log(res.data);
-  });
+const form = document.getElementById('search-form');
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
 
-  let API_KEY = 'YOUR_API_KEY';
-  let URL = "https://pixabay.com/api/?key="+API_KEY+"&q="+encodeURIComponent('red roses');
-  $.getJSON(URL, function(data){
-  if (parseInt(data.totalHits) > 0)
-      $.each(data.hits, function(i, hit){ console.log(hit.pageURL); });
-  else
-      console.log('No hits');
-  });
+let page = 1;
+let currentSearchQuery = '';
+
+form.addEventListener('submit', handleFormSubmit);
+loadMoreBtn.addEventListener('click', loadMoreImages);
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+
+  const formData = new FormData(event.currentTarget);
+  const searchQuery = formData.get('searchQuery');
+
+  if (searchQuery.trim() === '') {
+    Notiflix.Notify.warning('Please enter a search query.');
+    return;
+  }
+
+  if (searchQuery !== currentSearchQuery) {
+    clearGallery();
+    page = 1;
+    currentSearchQuery = searchQuery;
+  }
+
+  fetchImages(searchQuery, page);
+}
+
+function fetchImages(query, pageNum) {
+  const url = `${API_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${pageNum}&per_page=${perPage}`;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch images. Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.hits.length === 0 && pageNum === 1) {
+        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+        return;
+      }
+
+      if (data.hits.length === 0 && pageNum > 1) {
+        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+        return;
+      }
+
+      renderImages(data.hits);
+      page += 1;
+      showLoadMoreBtn();
+    })
+    .catch(error => {
+      console.error('Error fetching images:', error);
+      Notiflix.Notify.failure('Oops! Something went wrong. Please try again later.');
+    });
+}
+
+function renderImages(images) {
+  const cardsMarkup = images
+    .map(image => createImageCardMarkup(image))
+    .join('');
+
+  gallery.insertAdjacentHTML('beforeend', cardsMarkup);
+}
+
+function createImageCardMarkup({ webformatURL, likes, views, comments, downloads }) {
+  return `
+    <div class="photo-card">
+      <img data-src="${webformatURL}" alt="" loading="lazy" />
+      <div class="info">
+        <p class="info-item"><b>Likes:</b> ${likes}</p>
+        <p class="info-item"><b>Views:</b> ${views}</p>
+        <p class="info-item"><b>Comments:</b> ${comments}</p>
+        <p class="info-item"><b>Downloads:</b> ${downloads}</p>
+      </div>
+    </div>
+  `;
+}
+
+function clearGallery() {
+  gallery.innerHTML = '';
+}
+
+function showLoadMoreBtn() {
+  loadMoreBtn.classList.remove('hidden');
+}
+
+function hideLoadMoreBtn() {
+  loadMoreBtn.classList.add('hidden');
+}
+
+function loadMoreImages() {
+  fetchImages(currentSearchQuery, page);
+}
+
+hideLoadMoreBtn();
+
+// axios.get('/users')
+//   .then(res => {
+//     console.log(res.data);
+//   });
+
+//   let API_KEY = 'YOUR_API_KEY';
+//   let URL = "https://pixabay.com/api/?key="+35827866-cac2bfdbcf92b350627521ced+"&q="+encodeURIComponent('red roses');
+//   $.getJSON(URL, function(data){
+//   if (parseInt(data.totalHits) > 0)
+//       $.each(data.hits, function(i, hit){ console.log(hit.pageURL); });
+//   else
+//       console.log('No hits');
+//   });
 
 
 
