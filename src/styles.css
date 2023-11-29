@@ -24,7 +24,11 @@ body {
     border-radius: 8px;
     overflow: hidden;
     width: calc(20% - 20px);
-   
+    border-image: linear-gradient(
+      to bottom, 
+      rgb(232, 156, 33), 
+      rgba(0, 0, 0, 0)
+   ) 1 100%;
   }
   
   .photo-card img {
