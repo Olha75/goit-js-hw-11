@@ -1,5 +1,7 @@
 import axios from "axios";
 import Notiflix from "notiflix";
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 // const API_KEY = '35827866-cac2bfdbcf92b350627521ced';
 // const API_URL = 'https://pixabay.com/api/';
@@ -137,70 +139,81 @@ function handleFormSubmit(event) {
   
   const searchQuery = event.currentTarget.elements.searchQuery.value;
 
-  if (searchQuery.trim() === '') {Notiflix.Notify.failure('Введіть ключове слово')
-  return;
-}
+  if (searchQuery.trim() === '') {
+    Notiflix.Notify.failure('Введіть ключове слово');
+    return;
+  }
 
-page = 1;
-clearGallery();
+  page = 1;
+  clearGallery();
   fetchImages(searchQuery);
 }
 
 function loadMoreImages() {
-    page += 1;
-    const searchQuery = form.elements.searchQuery.value;
-    fetchImages(searchQuery);
-  }
+  page += 1;
+  const searchQuery = form.elements.searchQuery.value;
+  fetchImages(searchQuery);
+}
   
-  function clearGallery() {
-    gallery.innerHTML = '';
-  }
-  
-  function fetchImages(searchQuery) {
-    const key = '35827866-cac2bfdbcf92b350627521ced';
-    const perPage = 40;
-    const baseUrl = 'https://pixabay.com/api/';
-    const url = `${baseUrl}?key=${key}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${perPage}`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.hits.length === 0) {
-          Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.");
-          return;
-        }
-  
-        createImageCards(data.hits);
-        showLoadMoreBtn();
-      })
-      .catch(error => {
-        console.error('Error fetching images:', error);
-      });
-  }
-  
-  function createImageCards(images) {
-    const cardsMarkup = images.map(image => createImageCardMarkup(image)).join('');
-    gallery.insertAdjacentHTML('beforeend', cardsMarkup);
-  }
-  
-  function createImageCardMarkup(image) {
-    return `
-      <div class="photo-card">
-        <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
-        <div class="info">
-          <p class="info-item"><b>Likes:❤️ </b> ${image.likes}</p>
-          <p class="info-item"><b>Views:</b> ${image.views}</p>
-          <p class="info-item"><b>Comments:</b> ${image.comments}</p>
-          <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
-        </div>
-      </div>
-    `;
-  }
-  
-  function showLoadMoreBtn() {
-    loadMoreBtn.classList.remove('hidden');
-  }
+function clearGallery() {
+  gallery.innerHTML = '';
+}
 
+function fetchImages(searchQuery) {
+  const key = '35827866-cac2bfdbcf92b350627521ced';
+  const perPage = 40;
+  const baseUrl = 'https://pixabay.com/api/';
+  const url = `${baseUrl}?key=${key}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${perPage}`;
+
+  axios.get(url)
+    .then(response => {
+      const data = response.data;
+
+      if (data.hits.length === 0) {
+        Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.");
+        return;
+      }
+
+      createImageCards(data.hits);
+      showLoadMoreBtn();
+      initLightbox();
+    })
+    .catch(error => {
+      console.error('Error fetching images:', error);
+    });
+}
+
+function createImageCards(images) {
+  const cardsMarkup = images.map(image => createImageCardMarkup(image)).join('');
+  gallery.insertAdjacentHTML('beforeend', cardsMarkup);
+}
+
+function createImageCardMarkup(image) {
+  return `
+    <div class="photo-card">
+      <a href="${image.largeImageURL}" data-lightbox="gallery">
+        <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
+      </a>
+      <div class="info">
+        <p class="info-item"><b>Likes:❤️ </b> ${image.likes}</p>
+        <p class="info-item"><b>Views:</b> ${image.views}</p>
+        <p class="info-item"><b>Comments:</b> ${image.comments}</p>
+        <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
+      </div>
+    </div>
+  `;
+}
+
+function showLoadMoreBtn() {
+  loadMoreBtn.classList.remove('hidden');
+}
+
+function initLightbox() {
+  new SimpleLightbox('.gallery a', {
+    captions: true,
+    captionDelay: 250,
+  });
+}
 
 
 
