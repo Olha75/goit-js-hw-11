@@ -11,7 +11,9 @@ body {
   }
   
   .gallery {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
     background-color: rgb(69, 68, 67);
@@ -21,6 +23,8 @@ body {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
+    width: calc(20% - 20px);
+   
   }
   
   .photo-card img {
@@ -36,4 +40,18 @@ body {
   
   .info-item {
     margin: 0;
+  }
+  .load-more {
+color: rgb(254, 255, 255);
+background-color: rgb(113, 112, 110);
+margin-top: 10px;
+padding: 10px 20px;
+cursor: pointer;
+border-radius: 5px;
+transition: background-color 0.3s;
+  }
+
+  .load-more:hover {
+    background-color: rgb(232, 156, 33);
+    color: rgb(46, 47, 47);
   }
