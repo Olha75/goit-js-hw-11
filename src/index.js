@@ -1,110 +1,212 @@
 import axios from "axios";
 import Notiflix from "notiflix";
 
-const API_KEY = '35827866-cac2bfdbcf92b350627521ced';
-const API_URL = 'https://pixabay.com/api/';
-const perPage = 40;
+// const API_KEY = '35827866-cac2bfdbcf92b350627521ced';
+// const API_URL = 'https://pixabay.com/api/';
+// const perPage = 40;
 
-const form = document.getElementById('search-form');
+// const form = document.getElementById('search-form');
+// const gallery = document.querySelector('.gallery');
+// const loadMoreBtn = document.querySelector('.load-more');
+
+// let page = 1;
+// let currentSearchQuery = '';
+
+// form.addEventListener('submit', handleFormSubmit);
+// loadMoreBtn.addEventListener('click', loadMoreImages);
+
+// function handleFormSubmit(event) {
+//   event.preventDefault();
+
+//   const formData = new FormData(event.currentTarget);
+//   const searchQuery = formData.get('searchQuery');
+
+//   if (searchQuery.trim() === '') {
+//     Notiflix.Notify.warning('Please enter a search query.');
+//     return;
+//   }
+
+//   if (searchQuery !== currentSearchQuery) {
+//     clearGallery();
+//     page = 1;
+//     currentSearchQuery = searchQuery;
+//   }
+
+//   fetchImages(searchQuery, page);
+// }
+
+// function fetchImages(query, pageNum) {
+//   const url = `${API_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${pageNum}&per_page=${perPage}`;
+
+//   fetch(url)
+//     .then(response => {
+//       if (!response.ok) {
+//         throw new Error(`Failed to fetch images. Status: ${response.status}`);
+//       }
+//       return response.json();
+//     })
+//     .then(data => {
+//       if (data.hits.length === 0 && pageNum === 1) {
+//         Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+//         return;
+//       }
+
+//       if (data.hits.length === 0 && pageNum > 1) {
+//         Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+//         return;
+//       }
+
+//       renderImages(data.hits);
+//       page += 1;
+//       showLoadMoreBtn();
+//     })
+//     .catch(error => {
+//       console.error('Error fetching images:', error);
+//       Notiflix.Notify.failure('Oops! Something went wrong. Please try again later.');
+//     });
+// }
+
+// function renderImages(images) {
+//   const cardsMarkup = images
+//     .map(image => createImageCardMarkup(image))
+//     .join('');
+
+//   gallery.insertAdjacentHTML('beforeend', cardsMarkup);
+
+//   images.forEach(image => {
+//     const imgElement = gallery.querySelector(`[data-src="${image.webformatURL}"]`);
+//     imgElement.addEventListener('load', handleImageLoad);
+//     imgElement.addEventListener('error', handleImageError);
+//   });
+// }
+
+// function createImageCardMarkup({ webformatURL, likes, views, comments, downloads }) {
+//   return `
+//     <div class="photo-card">
+//       <img data-src="${webformatURL}" alt="" loading="lazy" />
+//       <div class="info">
+//         <p class="info-item"><b>Likes:</b> ${likes}</p>
+//         <p class="info-item"><b>Views:</b> ${views}</p>
+//         <p class="info-item"><b>Comments:</b> ${comments}</p>
+//         <p class="info-item"><b>Downloads:</b> ${downloads}</p>
+//       </div>
+//     </div>
+//   `;
+// }
+
+// function clearGallery() {
+//   gallery.innerHTML = '';
+// }
+
+// function showLoadMoreBtn() {
+//   loadMoreBtn.classList.remove('hidden');
+// }
+
+// function hideLoadMoreBtn() {
+//   loadMoreBtn.classList.add('hidden');
+// }
+
+// function loadMoreImages() {
+//   fetchImages(currentSearchQuery, page);
+// }
+
+// hideLoadMoreBtn();
+
+// function handleImageLoad(event) {
+//     event.target.removeAttribute('data-src');
+//   }
+
+//   function handleImageError(event) {
+//     event.target.src = '/src/images/dly pomulku.jpg';
+//     event.target.removeAttribute('data-src');
+// }
+
+//--------------------------------------------------------------------//
+
+const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 
 let page = 1;
-let currentSearchQuery = '';
 
 form.addEventListener('submit', handleFormSubmit);
 loadMoreBtn.addEventListener('click', loadMoreImages);
 
 function handleFormSubmit(event) {
   event.preventDefault();
+  
+  const searchQuery = event.currentTarget.elements.searchQuery.value;
 
-  const formData = new FormData(event.currentTarget);
-  const searchQuery = formData.get('searchQuery');
-
-  if (searchQuery.trim() === '') {
-    Notiflix.Notify.warning('Please enter a search query.');
-    return;
-  }
-
-  if (searchQuery !== currentSearchQuery) {
-    clearGallery();
-    page = 1;
-    currentSearchQuery = searchQuery;
-  }
-
-  fetchImages(searchQuery, page);
+  if (searchQuery.trim() === '') {Notiflix.Notify.failure('Введіть ключове слово')
+  return;
 }
 
-function fetchImages(query, pageNum) {
-  const url = `${API_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${pageNum}&per_page=${perPage}`;
-
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch images. Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.hits.length === 0 && pageNum === 1) {
-        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-        return;
-      }
-
-      if (data.hits.length === 0 && pageNum > 1) {
-        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-        return;
-      }
-
-      renderImages(data.hits);
-      page += 1;
-      showLoadMoreBtn();
-    })
-    .catch(error => {
-      console.error('Error fetching images:', error);
-      Notiflix.Notify.failure('Oops! Something went wrong. Please try again later.');
-    });
-}
-
-function renderImages(images) {
-  const cardsMarkup = images
-    .map(image => createImageCardMarkup(image))
-    .join('');
-
-  gallery.insertAdjacentHTML('beforeend', cardsMarkup);
-}
-
-function createImageCardMarkup({ webformatURL, likes, views, comments, downloads }) {
-  return `
-    <div class="photo-card">
-      <img data-src="${webformatURL}" alt="" loading="lazy" />
-      <div class="info">
-        <p class="info-item"><b>Likes:</b> ${likes}</p>
-        <p class="info-item"><b>Views:</b> ${views}</p>
-        <p class="info-item"><b>Comments:</b> ${comments}</p>
-        <p class="info-item"><b>Downloads:</b> ${downloads}</p>
-      </div>
-    </div>
-  `;
-}
-
-function clearGallery() {
-  gallery.innerHTML = '';
-}
-
-function showLoadMoreBtn() {
-  loadMoreBtn.classList.remove('hidden');
-}
-
-function hideLoadMoreBtn() {
-  loadMoreBtn.classList.add('hidden');
+page = 1;
+clearGallery();
+  fetchImages(searchQuery);
 }
 
 function loadMoreImages() {
-  fetchImages(currentSearchQuery, page);
-}
+    page += 1;
+    const searchQuery = form.elements.searchQuery.value;
+    fetchImages(searchQuery);
+  }
+  
+  function clearGallery() {
+    gallery.innerHTML = '';
+  }
+  
+  function fetchImages(searchQuery) {
+    const key = '35827866-cac2bfdbcf92b350627521ced';
+    const perPage = 40;
+    const baseUrl = 'https://pixabay.com/api/';
+    const url = `${baseUrl}?key=${key}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${perPage}`;
+  
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.hits.length === 0) {
+          Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.");
+          return;
+        }
+  
+        createImageCards(data.hits);
+        showLoadMoreBtn();
+      })
+      .catch(error => {
+        console.error('Error fetching images:', error);
+      });
+  }
+  
+  function createImageCards(images) {
+    const cardsMarkup = images.map(image => createImageCardMarkup(image)).join('');
+    gallery.insertAdjacentHTML('beforeend', cardsMarkup);
+  }
+  
+  function createImageCardMarkup(image) {
+    return `
+      <div class="photo-card">
+        <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
+        <div class="info">
+          <p class="info-item"><b>Likes:</b> ${image.likes}</p>
+          <p class="info-item"><b>Views:</b> ${image.views}</p>
+          <p class="info-item"><b>Comments:</b> ${image.comments}</p>
+          <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  function showLoadMoreBtn() {
+    loadMoreBtn.classList.remove('hidden');
+  }
 
-hideLoadMoreBtn();
+
+
+
+
+
+//--------------------------------------------------------//
 
 // axios.get('/users')
 //   .then(res => {
