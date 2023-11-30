@@ -91,3 +91,7 @@ transition: background-color 0.3s;
       background-color: rgb(232, 156, 33);
       color: rgb(46, 47, 47);
     }
+
+    .hidden {
+      display: none;
+    }

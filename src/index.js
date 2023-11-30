@@ -134,25 +134,32 @@ let page = 1;
 form.addEventListener('submit', handleFormSubmit);
 loadMoreBtn.addEventListener('click', loadMoreImages);
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
   event.preventDefault();
-  
   const searchQuery = event.currentTarget.elements.searchQuery.value;
 
   if (searchQuery.trim() === '') {
-    Notiflix.Notify.failure('Введіть ключове слово');
+    await Notiflix.Notify.failure('Введіть ключове слово');
     return;
   }
 
   page = 1;
   clearGallery();
-  fetchImages(searchQuery);
+  try {
+    await fetchImages(searchQuery);
+  } catch (error) {
+    console.error('Error handling form submit:', error);
+  }
 }
 
-function loadMoreImages() {
+async function loadMoreImages() {
   page += 1;
   const searchQuery = form.elements.searchQuery.value;
-  fetchImages(searchQuery);
+  try {
+    await fetchImages(searchQuery);
+  } catch (error) {
+    console.error('Error loading more images:', error);
+  }
 }
   
 function clearGallery() {
@@ -214,6 +221,7 @@ function initLightbox() {
     captionDelay: 250,
   });
 }
+
 
 
 
