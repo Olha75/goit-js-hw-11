@@ -95,3 +95,9 @@ transition: background-color 0.3s;
     .hidden {
       display: none;
     }
+
+    input{
+      border-radius: 5px;
+      border:none
+    
+    }

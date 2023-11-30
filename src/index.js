@@ -158,7 +158,7 @@ async function loadMoreImages() {
   try {
     await fetchImages(searchQuery);
   } catch (error) {
-    console.error('Error loading more images:', error);
+    console.error('Вибачте, під час завантаження додаткових зображень виникла помилка:', error);
   }
 }
   
@@ -177,7 +177,7 @@ function fetchImages(searchQuery) {
       const data = response.data;
 
       if (data.hits.length === 0) {
-        Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.");
+        Notiflix.Notify.info("На жаль, немає зображень, які відповідають вашому пошуковому запиту. Будь ласка, спробуйте ще раз.");
         return;
       }
 
@@ -186,7 +186,7 @@ function fetchImages(searchQuery) {
       initLightbox();
     })
     .catch(error => {
-      console.error('Error fetching images:', error);
+      console.error('Помилка отримання зображень:', error);
     });
 }
 
