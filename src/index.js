@@ -3,8 +3,6 @@ import Notiflix from "notiflix";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-
-
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
@@ -46,28 +44,27 @@ function clearGallery() {
   gallery.innerHTML = '';
 }
 
-function fetchImages(searchQuery) {
+async function fetchImages(searchQuery) {
   const key = '35827866-cac2bfdbcf92b350627521ced';
   const perPage = 40;
   const baseUrl = 'https://pixabay.com/api/';
   const url = `${baseUrl}?key=${key}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${perPage}`;
 
-  axios.get(url)
-    .then(response => {
-      const data = response.data;
+  try {
+    const response = await axios.get(url);
+    const data = response.data;
 
-      if (data.hits.length === 0) {
-        Notiflix.Notify.info("На жаль, немає зображень, які відповідають вашому пошуковому запиту. Будь ласка, спробуйте ще раз.");
-        return;
-      }
-      totalHits = data.totalHits;
-      createImageCards(data.hits);
-      showLoadMoreBtn();
-      initLightbox();
-    })
-    .catch(error => {
-      console.error('Помилка отримання зображень:', error);
-    });
+    if (data.hits.length === 0) {
+      Notiflix.Notify.info("На жаль, немає зображень, які відповідають вашому пошуковому запиту. Будь ласка, спробуйте ще раз.");
+      return;
+    }
+    totalHits = data.totalHits;
+    createImageCards(data.hits);
+    showLoadMoreBtn();
+    initLightbox();
+  } catch (error) {
+    console.error('Помилка отримання зображень:', error);
+  }
 }
 
 function createImageCards(images) {
