@@ -60,3 +60,34 @@ transition: background-color 0.3s;
     background-color: rgb(232, 156, 33);
     color: rgb(46, 47, 47);
   }
+
+  .search-form{
+    color: rgb(254, 255, 255);
+    background-color: rgb(113, 112, 110);
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;}
+
+    /* .search-form:hover {
+      background-color: rgb(232, 156, 33);
+      color: rgb(46, 47, 47);
+      padding-left: 40px;
+      padding-right: 40px;
+      padding-top: 10px;
+    } */
+
+    .search{
+      color: rgb(254, 255, 255);
+      background-color: rgb(113, 112, 110);
+      cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+
+    }
+    .search:hover{
+      background-color: rgb(232, 156, 33);
+      color: rgb(46, 47, 47);
+    }
