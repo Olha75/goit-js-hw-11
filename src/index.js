@@ -8,7 +8,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
-
+let totalHits = 0;
 let page = 1;
 
 form.addEventListener('submit', handleFormSubmit);
