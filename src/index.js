@@ -99,10 +99,15 @@ function showLoadMoreBtn() {
   loadMoreBtn.classList.toggle('hidden', !shouldShow);
 }
 
+let lightbox;
+
 function initLightbox() {
-  new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
+  if (lightbox) {
+    lightbox.destroy();
+  }
+
+  lightbox = new SimpleLightbox('.gallery a', {
+    captions: true,
     captionDelay: 250,
   });
 }
-
