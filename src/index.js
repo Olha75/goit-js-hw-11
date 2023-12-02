@@ -3,6 +3,8 @@ import Notiflix from "notiflix";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
+
+
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
@@ -89,13 +91,17 @@ function createImageCardMarkup(image) {
 }
 
 function showLoadMoreBtn() {
-  const shouldShow = totalHits > 40;
+  const perPage = 40;
+  const totalPages = Math.ceil(totalHits / perPage);
+  const isLastPage = page >= totalPages;
+
+  const shouldShow = totalHits > perPage && !isLastPage;
   loadMoreBtn.classList.toggle('hidden', !shouldShow);
 }
 
 function initLightbox() {
   new SimpleLightbox('.gallery a', {
-    captions: true,
+    captionsData: 'alt',
     captionDelay: 250,
   });
 }
